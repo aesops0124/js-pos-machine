@@ -54,45 +54,47 @@ function loadPromotions() {
   ];
 }
 
-function buildGoodsCountList (list) {
-  let count = [];
-  let item = [];
-  for (var i=0; i<list.length; i++) {
-    if(list[i].split('-').length > 0) {
-      count.push(list[i].split("-")[1]);
-      item.push(list[i].split("-")[0]);
-      list.splice(list.indexOf(list[i]),1);
-    }
-  }
-  for (var i=0; i<count; i++) {
-    list.push(item[i]);
-  }
+function buildGoodsCountLists (barcodeLists) {
+  return barcodeList.map(barcodeList => {
+    return buildGoodsCountList(barcodeList);
+  });
   
-  let c = [];
-  list = list.forEach(function(i) { c[i] = (c[i]||0) + 1;});
-  return list;
 }
-function manipulatePromotions(receipt, promotionList) {
-  var buyTwoGetOneFreeitemList = promotionList.filter(item => item.type == 'BUY_TWO_GET_ONE_FREE');
-  buyTwoGetOneFreeitemList = buyTwoGetOneFreeitemList.barcodes;
+function buildGoodsCountList (barcodeList) {
+    let [barcode, quantity] = barcodeList.split("-");
+    quantity = quantity === undefined ? 1 : parseFloat(count);
+    return {
+      barcode,
+      quantity
+    };
 }
 
-function createReceipt (expandedShoppingItemList) {
-  let uniqueItemList = loadAllItems();
-  let promotionItemList = loadPromotions();
+function buildPurchasedGoodsList (goodsCountList) {
+  var inventoryList = loadAllItems();
 
-  
-  let receiptWithoutPromotion = {};
-  
+  //Target: Filter the purchased goods from inventoryList by barcode and return a purchasedGoodsList with additional information of name, unit, price.
+}
+
+function calculateGoodPrice (purchasedGoodsList) {
+  var promotionList = loadPromotions();
+
+  //Target: Calculate subtotal and saving per each goods from promotionList
+
+}
 
 
-  var receiptWithPromotion = manipulatePromotions (receiptWithoutPromotion, promotionItemList);
+function BuildPriceReceipt (purchasedGoodsList) {
 
 
 }
 
-function printReceipt (shoppingItemList) {
-  var goodsCountList = buildGoodsCountList(shoppingItemList);
+function FormatReceipt (receiptStrWithoutFormat) {
+
+}
+
+
+function printReceipt (barcodeList) {
+  var goodsCountList = buildGoodsCountLists(barcodeList);
   var purchasedGoodsList = buildPurchasedGoodsList(goodsCountList);
   var purchasedGoodsList = calculateGoodPrice (purchasedGoodsList);
   var receiptStrWithoutFormat = BuildPriceReceipt(purchasedGoodsList);
